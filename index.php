@@ -9,7 +9,7 @@
                     <figcaption class="caption">
                         <h3><?= $cookie['name']; ?></h3>
                         <p><?= $cookie['description']; ?></p>
-                        <a href="?add_to_cart=<?= $id; ?>" class="btn btn-primary">
+                        <a href="?id=<?= $id; ?>&name=<?= $cookie['name']; ?>" class="btn btn-primary">
                             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add to cart
                         </a>
                     </figcaption>
@@ -17,5 +17,29 @@
             </div>
         <?php } ?>
     </div>
+    <?php
+    $found = false;
+
+    if (isset($_GET['id'])) {
+        if (isset($_SESSION['cart'])) {
+            foreach ($_SESSION['cart'] as $key => $data) {
+                if (array_search($_GET['id'], $data)) {
+                    $_SESSION['cart'][$key]['quantity'] += 1;
+                    $found = true;
+                    break;
+                }
+            }
+        }
+
+        if (!$found) {
+            $_SESSION['cart'][] = [
+                'id' => $_GET['id'],
+                'name' => $_GET['name'],
+                'quantity' => 1,
+            ];
+        }
+    }
+    ?>
 </section>
+
 <?php require 'inc/foot.php'; ?>
